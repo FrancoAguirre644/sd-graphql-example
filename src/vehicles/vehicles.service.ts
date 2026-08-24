@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Vehicle } from './entities/vehicle.entity';
 import { VehicleType } from './enums/vehicle-type.enum';
+import { CreateVehicleInput } from './dto/create-vehicle.input';
 
 @Injectable()
 export class VehiclesService {
@@ -40,4 +41,17 @@ export class VehiclesService {
 
         return vehicle;
     }
+
+    create(input: CreateVehicleInput): Vehicle {
+        const vehicle: Vehicle = {
+            id: this.vehicles.length + 1,
+            ...input,
+            active: true,
+        };
+
+        this.vehicles.push(vehicle);
+
+        return vehicle;
+    }
+
 }
