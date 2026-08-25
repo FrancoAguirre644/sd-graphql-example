@@ -63,4 +63,12 @@ export class VehiclesService {
         return vehicle;
     }
 
+    delete(id: number): boolean {
+        const vehicle = this.findOne(id);
+
+        vehicle.active = false;
+
+        return true;
+    }
+
 }

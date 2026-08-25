@@ -28,4 +28,9 @@ export class VehiclesResolver {
     ): Vehicle {
         return this.vehiclesService.update(id, input);
     }
+
+    @Mutation(() => Boolean)
+    deleteVehicle(@Args('id', { type: () => Int }) id: number): boolean {
+        return this.vehiclesService.delete(id);
+    }
 }
