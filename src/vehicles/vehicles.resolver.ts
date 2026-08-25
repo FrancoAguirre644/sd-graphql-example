@@ -2,6 +2,7 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Vehicle } from './entities/vehicle.entity';
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleInput } from './dto/create-vehicle.input';
+import { UpdateVehicleInput } from './dto/update-vehicle.input';
 
 @Resolver(() => Vehicle)
 export class VehiclesResolver {
@@ -20,5 +21,11 @@ export class VehiclesResolver {
     @Mutation(() => Vehicle)
     createVehicle(@Args('input') input: CreateVehicleInput): Vehicle {
         return this.vehiclesService.create(input);
+    }
+
+    @Mutation(() => Vehicle)
+    updateVehicle(@Args('id', { type: () => Int }) id: number, @Args('input') input: UpdateVehicleInput,
+    ): Vehicle {
+        return this.vehiclesService.update(id, input);
     }
 }
