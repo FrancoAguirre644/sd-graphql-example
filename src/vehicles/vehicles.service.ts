@@ -1,40 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Vehicle } from './entities/vehicle.entity';
-import { VehicleType } from './enums/vehicle-type.enum';
+import { Vehicle } from './types/vehicle.type';
 import { CreateVehicleInput } from './dto/create-vehicle.input';
 import { UpdateVehicleInput } from './dto/update-vehicle.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { VehicleEntity } from './entities/vehicle.entity';
 
 @Injectable()
 export class VehiclesService {
-    private readonly vehicles: Vehicle[] = [
-        {
-            id: 1,
-            licensePlate: 'AB123CD',
-            brand: 'Toyota',
-            model: 'Corolla',
-            year: 2024,
-            color: 'White',
-            type: VehicleType.SEDAN,
-            active: true,
-        },
-        {
-            id: 2,
-            licensePlate: 'AC456EF',
-            brand: 'Ford',
-            model: 'Ranger',
-            year: 2023,
-            color: 'Black',
-            type: VehicleType.PICKUP,
-            active: true,
-        },
-    ];
 
-    findAll(): Vehicle[] {
-        return this.vehicles;
+    constructor(
+        @InjectRepository(VehicleEntity)
+        private readonly vehicleRepository: Repository<VehicleEntity>,
+    ) { }
+
+    async findAll(): Promise<Vehicle[]> {
+        const vehicles = await this.vehicleRepository.find();
+
+        return vehicles;
     }
 
-    findOne(id: number): Vehicle {
-        const vehicle = this.vehicles.find(vehicle => vehicle.id === id);
+    async findOne(id: number): Promise<Vehicle> {
+        const vehicle = await this.vehicleRepository.findOne({
+            where: { id },
+        });
 
         if (!vehicle) {
             throw new NotFoundException(`Vehicle with ID ${id} not found.`);
@@ -43,32 +32,44 @@ export class VehiclesService {
         return vehicle;
     }
 
-    create(input: CreateVehicleInput): Vehicle {
-        const vehicle: Vehicle = {
-            id: this.vehicles.length + 1,
+    async create(input: CreateVehicleInput): Promise<Vehicle> {
+        const vehicle = this.vehicleRepository.create({
             ...input,
             active: true,
-        };
+        });
 
-        this.vehicles.push(vehicle);
+        const savedVehicle = await this.vehicleRepository.save(vehicle);
 
-        return vehicle;
+        return savedVehicle
     }
 
-    update(id: number, input: UpdateVehicleInput): Vehicle {
-        const vehicle = this.findOne(id);
+    async update(id: number, input: UpdateVehicleInput): Promise<Vehicle> {
+        const vehicle = await this.vehicleRepository.preload({
+            id,
+            ...input,
+        });
 
-        Object.assign(vehicle, input);
+        if (!vehicle) {
+            throw new NotFoundException(`Vehicle with ID ${id} not found`);
+        }
 
-        return vehicle;
+        const updatedVehicle = await this.vehicleRepository.save(vehicle);
+
+        return updatedVehicle;
     }
 
-    delete(id: number): boolean {
-        const vehicle = this.findOne(id);
+    async delete(id: number): Promise<boolean> {
+        const vehicle = await this.vehicleRepository.preload({
+            id,
+            active: false,
+        });
 
-        vehicle.active = false;
+        if (!vehicle) {
+            throw new NotFoundException(`Vehicle with ID ${id} not found`);
+        }
+
+        await this.vehicleRepository.save(vehicle);
 
         return true;
     }
-
 }

@@ -1,5 +1,5 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Vehicle } from './entities/vehicle.entity';
+import { Vehicle } from './types/vehicle.type';
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleInput } from './dto/create-vehicle.input';
 import { UpdateVehicleInput } from './dto/update-vehicle.input';
@@ -9,28 +9,27 @@ export class VehiclesResolver {
     constructor(private readonly vehiclesService: VehiclesService) { }
 
     @Query(() => [Vehicle])
-    vehicles(): Vehicle[] {
+    async vehicles(): Promise<Vehicle[]> {
         return this.vehiclesService.findAll();
     }
 
     @Query(() => Vehicle)
-    vehicle(@Args('id', { type: () => Int }) id: number): Vehicle | undefined {
+    async vehicle(@Args('id', { type: () => Int }) id: number): Promise<Vehicle> {
         return this.vehiclesService.findOne(id);
     }
 
     @Mutation(() => Vehicle)
-    createVehicle(@Args('input') input: CreateVehicleInput): Vehicle {
+    async createVehicle(@Args('input') input: CreateVehicleInput): Promise<Vehicle> {
         return this.vehiclesService.create(input);
     }
 
     @Mutation(() => Vehicle)
-    updateVehicle(@Args('id', { type: () => Int }) id: number, @Args('input') input: UpdateVehicleInput,
-    ): Vehicle {
+    async updateVehicle(@Args('id', { type: () => Int }) id: number, @Args('input') input: UpdateVehicleInput): Promise<Vehicle> {
         return this.vehiclesService.update(id, input);
     }
 
     @Mutation(() => Boolean)
-    deleteVehicle(@Args('id', { type: () => Int }) id: number): boolean {
+    async deleteVehicle(@Args('id', { type: () => Int }) id: number): Promise<boolean> {
         return this.vehiclesService.delete(id);
     }
 }

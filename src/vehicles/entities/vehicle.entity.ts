@@ -1,29 +1,32 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { VehicleType } from '../enums/vehicle-type.enum';
 
-@ObjectType()
-export class Vehicle {
-  @Field(() => ID)
+@Entity('vehicles')
+export class VehicleEntity {
+  @PrimaryGeneratedColumn()
   id!: number;
 
-  @Field()
+  @Column({ length: 20 })
   licensePlate!: string;
 
-  @Field()
+  @Column({ length: 100 })
   brand!: string;
 
-  @Field()
+  @Column({ length: 100 })
   model!: string;
 
-  @Field(() => Int)
+  @Column()
   year!: number;
 
-  @Field()
+  @Column({ length: 50 })
   color!: string;
 
-  @Field(() => VehicleType)
+  @Column({
+    type: 'enum',
+    enum: VehicleType,
+  })
   type!: VehicleType;
 
-  @Field()
+  @Column({ default: true })
   active!: boolean;
 }
