@@ -32,6 +32,25 @@ export class VehiclesService {
         return vehicle;
     }
 
+    async search(search: string): Promise<Vehicle[]> {
+        const vehicles = await this.vehicleRepository
+            .createQueryBuilder('vehicle')
+            .where(
+                `
+        LOWER(vehicle.licensePlate) LIKE LOWER(:search)
+        OR LOWER(vehicle.brand) LIKE LOWER(:search)
+        OR LOWER(vehicle.model) LIKE LOWER(:search)
+        OR LOWER(vehicle.color) LIKE LOWER(:search)
+      `,
+                {
+                    search: `%${search}%`,
+                },
+            )
+            .getMany();
+
+        return vehicles;
+    }
+
     async create(input: CreateVehicleInput): Promise<Vehicle> {
         const vehicle = this.vehicleRepository.create({
             ...input,

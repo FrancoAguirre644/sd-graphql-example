@@ -24,6 +24,7 @@ enum VehicleType {
 type Query {
   vehicles: [Vehicle!]!
   vehicle(id: Int!): Vehicle!
+  searchVehicles(search: String!): [Vehicle!]!
 }
 
 type Mutation {

@@ -18,6 +18,11 @@ export class VehiclesResolver {
         return this.vehiclesService.findOne(id);
     }
 
+    @Query(() => [Vehicle])
+    async searchVehicles(@Args('search') search: string): Promise<Vehicle[]> {
+        return this.vehiclesService.search(search);
+    }
+
     @Mutation(() => Vehicle)
     async createVehicle(@Args('input') input: CreateVehicleInput): Promise<Vehicle> {
         return this.vehiclesService.create(input);
