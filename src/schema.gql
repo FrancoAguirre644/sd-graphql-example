@@ -1,0 +1,52 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Vehicle {
+  id: ID!
+  licensePlate: String!
+  brand: String!
+  model: String!
+  year: Int!
+  color: String!
+  type: VehicleType!
+  active: Boolean!
+}
+
+enum VehicleType {
+  SEDAN
+  SUV
+  PICKUP
+  COUPE
+  HATCHBACK
+}
+
+type Query {
+  vehicles: [Vehicle!]!
+  vehicle(id: Int!): Vehicle!
+}
+
+type Mutation {
+  createVehicle(input: CreateVehicleInput!): Vehicle!
+  updateVehicle(id: Int!, input: UpdateVehicleInput!): Vehicle!
+  deleteVehicle(id: Int!): Boolean!
+}
+
+input CreateVehicleInput {
+  licensePlate: String!
+  brand: String!
+  model: String!
+  year: Int!
+  color: String!
+  type: VehicleType!
+}
+
+input UpdateVehicleInput {
+  licensePlate: String
+  brand: String
+  model: String
+  year: Int
+  color: String
+  type: VehicleType
+  active: Boolean
+}
