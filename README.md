@@ -1,4 +1,4 @@
-# Vehicle API
+# Vehicle GraphQL
 
 API desarrollada con **NestJS**, **GraphQL**, **TypeORM** y **MySQL**.
 
