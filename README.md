@@ -367,15 +367,3 @@ Iniciar la aplicación en modo desarrollo:
 ```bash
 npm run start:dev
 ```
-
-Compilar el proyecto:
-
-```bash
-npm run build
-```
-
-Ejecutar la aplicación en modo producción:
-
-```bash
-npm run start:prod
-```
